@@ -3,16 +3,28 @@
  */
 package farm;
 
-
+/**
+ * @author marco.mangan@pucrs.br
+ */
 interface Talker {
     String talk();
 }
 
-
 abstract class Animal implements Talker {
     protected String name;
 
-    public Animal(String name) {
+    public Animal(String name)  {
+        // -ea assert name != null;
+        if (name == null) {
+            IllegalArgumentException e = new IllegalArgumentException(
+                    "O animal precisa de um nome! Não pode ser null!!");
+            throw e;
+        }
+        if (name.isBlank()) {
+            IllegalArgumentException e = new IllegalArgumentException(
+                    "O animal precisa de um nome! Não pode ser vazio!!");
+            throw e;
+        }        
         this.name = name;
     }
 
@@ -22,10 +34,10 @@ abstract class Animal implements Talker {
 /// NOSSA EQUIPE
 
 class Radio implements Talker {
-     @Override
+    @Override
     public String talk() {
         return " ***toca música*** ";
-    }   
+    }
 }
 
 class Parrot extends Animal {
@@ -36,21 +48,9 @@ class Parrot extends Animal {
 
     @Override
     public String talk() {
-        return this.name +" diz croc.";
+        return this.name + " diz croc.";
     }
 
-}
-
-class Cat extends Animal {
-
-    public Cat(String name) {
-        super(name);
-    }
-
-    @Override
-    public String talk() {
-        return this.name +" diz miau.";
-    }
 }
 
 class Dog extends Animal {
@@ -61,7 +61,7 @@ class Dog extends Animal {
 
     @Override
     public String talk() {
-        return this.name +" diz au au.";
+        return this.name + " diz au au.";
     }
 }
 
@@ -69,16 +69,26 @@ class Dog extends Animal {
 
 public class App {
     public static void main(String[] args) {
-        System.out.println("Farm!");
-        Talker farm[] = { 
-            new Cat("Felix"), 
-            new Cat("Jefferson"), 
-            new Dog("Bilu"),
-            new Parrot("Loro"),
-            new Radio()
-        };
-        for (Talker a : farm) {
-            System.out.println(a.talk());
+        try {
+
+            System.out.println("Farm!");
+            Talker farm[] = {
+                    new Cat("Felix"),
+                    new Cat("Jefferson"),
+                    new Dog("Bilu"),
+                    new Parrot("José"),
+                    new Radio()
+            };
+            for (Talker a : farm) {
+                System.out.println(a.talk());
+            }
+
+        } catch (ArrayIndexOutOfBoundsException e) {
+            System.err.println("Ocorreu um erro na execução. Contacte o suporte!");
+        } catch (IllegalArgumentException e) {
+            System.err.println("Ocorreu um erro na execução. Contacte o suporte!");
+        } finally {
+            System.out.println("Obrigado por usar nossos sistemas!");
         }
     }
 }
