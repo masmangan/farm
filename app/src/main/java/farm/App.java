@@ -3,6 +3,11 @@
  */
 package farm;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+
 /**
  * @author marco.mangan@pucrs.br
  */
@@ -10,10 +15,10 @@ interface Talker {
     String talk();
 }
 
-abstract class Animal implements Talker {
+abstract class Animal implements Talker, Comparable<Animal> {
     protected String name;
 
-    public Animal(String name)  {
+    public Animal(String name) {
         // -ea assert name != null;
         if (name == null) {
             IllegalArgumentException e = new IllegalArgumentException(
@@ -24,11 +29,29 @@ abstract class Animal implements Talker {
             IllegalArgumentException e = new IllegalArgumentException(
                     "O animal precisa de um nome! Não pode ser vazio!!");
             throw e;
-        }        
+        }
         this.name = name;
     }
 
+    // a.compareTo(b)
+    //
+    // 2 compareTo 2 == 0 .... 2 - 2 == 0 a == b
+    // 3 compareTo 2 == 1 .... 3 - 2 == 1 a > b
+    // 2 compareTo 3 == -1 ... 2 - 3 == -1 a < b
+
+    @Override
+    public int compareTo(Animal o) {
+        Animal a = (Animal) o;
+        return name.compareTo(a.name);
+
+    }
+
     public abstract String talk();
+
+    @Override
+    public String toString() {
+        return String.format("{%s name: %s}", super.toString(), name);
+    }
 }
 
 /// NOSSA EQUIPE
@@ -67,21 +90,78 @@ class Dog extends Animal {
 
 ///
 
+class Caixa<E extends Animal> {
+    private E animal;
+
+    public void add(E animal) throws IllegalStateException {
+        System.out.println(animal.getClass().getName());
+        if (this.animal == null) {
+            this.animal = animal;
+        } else {
+            throw new IllegalStateException("A caixa está ocupada!");
+        }
+    }
+
+    public E remove() {
+        if (this.animal == null) {
+            throw new IllegalStateException("A caixa está vazia!");
+        }
+        E a = this.animal;
+        this.animal = null;
+        return a;
+    }
+
+    public boolean isEmpty() {
+        return this.animal == null;
+    }
+}
+
 public class App {
     public static void main(String[] args) {
         try {
 
             System.out.println("Farm!");
-            Talker farm[] = {
+            Animal farm[] = {
                     new Cat("Felix"),
                     new Cat("Jefferson"),
                     new Dog("Bilu"),
-                    new Parrot("José"),
-                    new Radio()
+                    new Parrot("José")// ,
+                    // new Radio()
             };
-            for (Talker a : farm) {
+
+            System.out.println(Arrays.toString(farm));
+            Arrays.sort(farm);
+            System.out.println(Arrays.toString(farm));
+
+            List<Animal> farm2 = new ArrayList<Animal>();
+            farm2.add(new Cat("Felix"));
+            farm2.add(new Cat("Jefferson"));
+            farm2.add(new Dog("Bilu"));
+            farm2.add(new Parrot("José"));
+            // farm2.add(new Radio());
+            // farm2.add( "Hello!" );
+
+            System.out.println(farm2);
+            Collections.sort(farm2);
+            System.out.println(farm2);
+
+            for (Talker a : farm2) {
                 System.out.println(a.talk());
             }
+
+            Caixa<Animal> transport1 = new Caixa<>();
+            transport1.add(farm2.get(0)); // Bilu!
+            Animal a1 = transport1.remove(); // Bilu!
+            System.out.println(a1);
+
+            Caixa<Cat> transport2 = new Caixa<Cat>();
+            Cat c = new Cat("Joana");
+            transport2.add(c); // Joana
+            Cat a2 = transport2.remove(); // Joana!
+            System.out.println(a2);
+
+            //Caixa<Radio> cr = new Caixa<>();
+            //cr.remove();
 
         } catch (ArrayIndexOutOfBoundsException e) {
             System.err.println("Ocorreu um erro na execução. Contacte o suporte!");
