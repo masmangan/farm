@@ -19,7 +19,7 @@ abstract class Animal implements Talker, Comparable<Animal> {
     protected String name;
 
     public Animal(String name) {
-        // -ea assert name != null;
+        //assert name.length() > 50;
         if (name == null) {
             IllegalArgumentException e = new IllegalArgumentException(
                     "O animal precisa de um nome! Não pode ser null!!");

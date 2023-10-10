@@ -33,3 +33,8 @@ tasks.named('test') {
     // Use JUnit Platform for unit tests.
     useJUnitPlatform()
 }
+
+//https://stackoverflow.com/questions/48396274/how-to-enable-assertions-in-the-gradle-run-task
+run {
+    enableAssertions = true
+}
